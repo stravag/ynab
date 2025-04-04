@@ -5,8 +5,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "compile": "tsc",
-    "copy:html": "cp -r src/static/* dist/",
-    "build": "npm run clean && npm run compile && npm run copy:html",
+    "copy:static": "cp -r src/static/* dist/",
+    "build": "npm run clean && npm run compile && npm run copy:static",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && http-server dist -o"
   },
