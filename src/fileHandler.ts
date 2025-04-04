@@ -1,12 +1,14 @@
+import Papa, {ParseResult} from 'papaparse';
+
 export function handleFile(file: File) {
     if (!file.name.endsWith('.csv')) alert("Please upload a CSV file.")
 
     const reader = new FileReader()
     reader.onload = (e) => {
-        if (e.target && e.target.result) {
+        if (e.target && typeof e.target.result == "string") {
             const content = e.target.result
 
-            const records = convertToYnabRecords(content)
+            const records = convert(content)
             const ynabCsv = convertToYnabCsv(records)
 
             const fileName = file.name.replace('.csv', `_ynab_${Date.now().valueOf()}.csv`)
@@ -16,41 +18,59 @@ export function handleFile(file: File) {
     reader.readAsText(file)
 }
 
-function convertToYnabRecords(content: string | ArrayBuffer): YnabRecord[] {
-    console.log(content.toString())
-    return [{
-        date: new Date(),
-        payee: 'foo',
-        memo: 'bar',
-        outflow: '123',
-        inflow: '456'
-    }]
+function convert(content: string): YnabRecord[] {
+    if (content.startsWith('TransactionId,CardId')) {
+        return convertViseca(content)
+    } else if (content.startsWith('"Datum";"Buchungstext"')) {
+        return convertZkb(content)
+    } else {
+        throw Error("Uploaded unexpected CSV file")
+    }
+}
+
+function convertZkb(content: string): YnabRecord[] {
+    const csv: ParseResult<ZkbRecord> = Papa.parse(content, {
+        delimiter: ';',
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+    })
+
+    return csv.data
+        .map(r => ({
+            Date: r.Valuta!,
+            Payee: r.Buchungstext!,
+            Memo: r.Zahlungszweck!,
+            Outflow: r["Belastung CHF"],
+            Inflow: r["Gutschrift CHF"]
+        }))
+}
+
+function convertViseca(content: string): YnabRecord[] {
+    const csv: ParseResult<VisecaRecord> = Papa.parse(content, {
+        delimiter: ';',
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+    })
+
+    return csv.data
+        .map(r => ({
+            Date: r.ValutaDate,
+            Payee: r.MerchantName ?? r.Details,
+            Memo: r.Details,
+            Outflow: r.Amount > 0 ? r.Amount : null,
+            Inflow: r.Amount < 0 ? r.Amount : null
+        }))
 }
 
 function convertToYnabCsv(records: YnabRecord[]): string {
-    const delimiter = ';'
-    const csv = []
-    const headers = ["Date", "Payee", "Memo", "Outflow", "Inflow"]
-        .map(escape)
-        .join(delimiter)
-
-    csv.push(headers)
-
-    const dateFormat = new Intl.DateTimeFormat('de-CH', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
+    return Papa.unparse(records, {
+        delimiter: ',',
+        header: true,
+        newline: '\n',
+        skipEmptyLines: true,
     })
-    csv.push(records
-        .map(r => [
-            escape(dateFormat.format(r.date)),
-            escape(r.payee),
-            escape(r.memo ?? ''),
-            escape(r.outflow),
-            escape(r.inflow)
-        ].join(delimiter)))
-
-    return csv.join('\n')
 }
 
 function download(ynabCsv: string, fileName: string) {
@@ -64,14 +84,42 @@ function download(ynabCsv: string, fileName: string) {
     document.body.removeChild(downloadLink)
 }
 
-function escape(str: string): string {
-    return `"${str}"`
+type ZkbRecord = {
+    "Datum": Date | null,
+    "Buchungstext": string,
+    "Whg": string | null,
+    "Betrag Detail": number,
+    "ZKB-Referenz": string | null,
+    "Referenznummer": string | null,
+    "Belastung CHF": number | null,
+    "Gutschrift CHF": number | null,
+    "Valuta": Date | null,
+    "Saldo CHF": number | null,
+    "Zahlungszweck": string | null,
+    "Details": string | null,
+}
+
+type VisecaRecord = {
+    TransactionId: string,
+    CardId: string | null,
+    Date: Date,
+    ValutaDate: Date,
+    Amount: number,
+    Currency: string,
+    OriginalAmount: number,
+    OriginalCurrency: string,
+    MerchantName: string | null,
+    MerchantPlace: string | null,
+    MerchantCountry: string | null,
+    StateType: string,
+    Details: string,
+    Type: string
 }
 
 type YnabRecord = {
-    date: Date,
-    payee: string,
-    outflow: string,
-    memo: string | null,
-    inflow: string,
+    Date: Date,
+    Payee: string,
+    Memo: string | null,
+    Outflow: number | null,
+    Inflow: number | null,
 }
