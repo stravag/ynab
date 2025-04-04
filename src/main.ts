@@ -1,15 +1,20 @@
-import './style.css'
-import { setupCounter } from './counter.ts'
+import {handleFile} from "./fileHandler.ts";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <h1>Upload CSV File</1>
-    <div class="card">
-      <input type="file" id="csvFileInput" accept=".csv" />
-      <div class="preview" id="fileInfo"></div>
-    </div>
-    <button id="counter" type="button"></button>
-  </div>
-`
+const dropZone = document.querySelector<HTMLDivElement>('#drop-zone')!
+dropZone.addEventListener('dragover', (event) => {
+    event.preventDefault()
+    dropZone.style.backgroundColor = 'gray'
+})
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+dropZone.addEventListener('dragleave', (event) => {
+    event.preventDefault()
+    dropZone.style.backgroundColor = ''
+})
+
+dropZone.addEventListener('drop', (event) => {
+    event.preventDefault()
+    dropZone.style.backgroundColor = ''
+    if (event.dataTransfer) {
+        handleFile(event.dataTransfer.files[0])
+    }
+})
