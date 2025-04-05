@@ -7,7 +7,7 @@
     "clean": "rm -rf dist",
     "test": "vitest",
     "dev": "vite",
-    "build": "run clean && tsc && vite build",
+    "build": "npm run clean && tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
