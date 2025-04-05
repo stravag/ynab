@@ -1,10 +1,16 @@
 import Papa, {ParseResult} from 'papaparse';
 
+const ynabDateFormat = Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+})
+
 export function convert(content: string): string {
     let records: YnabRecord[] = [];
-    if (content.startsWith('TransactionId,CardId')) {
+    if (content.trim().startsWith('TransactionId,CardId')) {
         records = convertViseca(content)
-    } else if (content.startsWith('"Datum";"Buchungstext"')) {
+    } else if (content.trim().startsWith('"Datum";"Buchungstext"')) {
         records = convertZkb(content)
     } else {
         throw Error("Uploaded unexpected CSV file")
@@ -22,7 +28,7 @@ function convertZkb(content: string): YnabRecord[] {
 
     return csv.data
         .map(r => ({
-            Date: r.Valuta!,
+            Date: Date.parse(r.Valuta!).toString(),
             Payee: r.Buchungstext!,
             Memo: r.Zahlungszweck!,
             Outflow: r["Belastung CHF"],
@@ -32,20 +38,22 @@ function convertZkb(content: string): YnabRecord[] {
 
 function convertViseca(content: string): YnabRecord[] {
     const csv: ParseResult<VisecaRecord> = Papa.parse(content, {
-        delimiter: ';',
+        delimiter: ',',
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
     })
 
     return csv.data
-        .map(r => ({
-            Date: r.ValutaDate,
-            Payee: r.MerchantName ?? r.Details,
-            Memo: r.Details,
-            Outflow: r.Amount > 0 ? r.Amount : null,
-            Inflow: r.Amount < 0 ? r.Amount : null
-        }))
+        .map(r => {
+            return {
+                Date: ynabDateFormat.format(Date.parse(r.Date)),
+                Payee: r.MerchantName ?? r.Details,
+                Memo: r.Details,
+                Outflow: r.Amount > 0 ? r.Amount : null,
+                Inflow: r.Amount < 0 ? r.Amount : null
+            }
+        })
 }
 
 function convertToYnabCsv(records: YnabRecord[]): string {
@@ -58,7 +66,7 @@ function convertToYnabCsv(records: YnabRecord[]): string {
 }
 
 type ZkbRecord = {
-    "Datum": Date | null,
+    "Datum": string | null,
     "Buchungstext": string,
     "Whg": string | null,
     "Betrag Detail": number,
@@ -66,7 +74,7 @@ type ZkbRecord = {
     "Referenznummer": string | null,
     "Belastung CHF": number | null,
     "Gutschrift CHF": number | null,
-    "Valuta": Date | null,
+    "Valuta": string | null,
     "Saldo CHF": number | null,
     "Zahlungszweck": string | null,
     "Details": string | null,
@@ -75,8 +83,8 @@ type ZkbRecord = {
 type VisecaRecord = {
     TransactionId: string,
     CardId: string | null,
-    Date: Date,
-    ValutaDate: Date,
+    Date: string,
+    ValutaDate: string,
     Amount: number,
     Currency: string,
     OriginalAmount: number,
@@ -90,7 +98,7 @@ type VisecaRecord = {
 }
 
 export type YnabRecord = {
-    Date: Date,
+    Date: string,
     Payee: string,
     Memo: string | null,
     Outflow: number | null,
