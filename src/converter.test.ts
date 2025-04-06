@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
 
 function loadCsv(name: string): string {
-    return readFileSync(resolve(__dirname, '../test/fixtures', name), 'utf-8')
+    return readFileSync(resolve(__dirname, '../test/fixtures', name), 'utf-8').trim()
 }
 
 describe('convert csv to ynab csv', () => {
