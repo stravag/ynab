@@ -9,8 +9,9 @@ function loadCsv(name: string): string {
 
 describe('convert csv to ynab csv', () => {
     it('can convert ZKB CSV', () => {
+        const expected = loadCsv('zkb_ynab.csv')
         const result = convert(loadCsv('zkb.csv'))
-        expect(result).not.empty
+        expect(result).eq(expected)
     })
 
     it('can convert Viseca CSV', () => {

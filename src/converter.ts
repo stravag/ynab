@@ -27,10 +27,11 @@ function convertZkb(content: string): YnabRecord[] {
     })
 
     return csv.data
+        .filter(r => r["ZKB-Referenz"] !== null)
         .map(r => ({
-            Date: Date.parse(r.Valuta!).toString(),
-            Payee: r.Buchungstext!,
-            Memo: r.Zahlungszweck!,
+            Date: r.Valuta!,
+            Payee: r.Details ?? r.Buchungstext!,
+            Memo: r.Zahlungszweck,
             Outflow: r["Belastung CHF"],
             Inflow: r["Gutschrift CHF"]
         }))

@@ -1,8 +1,9 @@
 ﻿"Datum";"Buchungstext";"Whg";"Betrag Detail";"ZKB-Referenz";"Referenznummer";"Belastung CHF";"Gutschrift CHF";"Valuta";"Saldo CHF";"Zahlungszweck";"Details"
-"31.03.2025";"Bardividende Anteile -A- iShares ETF (CH) - iShares Sw Valor 23793563";"";"";"L11H711194DREBZS-1";"";"";"91.84";"31.03.2025";"2468.83";"";""
-"31.03.2025";"Einkauf ZKB Visa Debit Card Nr. xxxx 5793, SV REST BISTRO";"";"";"";"";"8.50";"";"";"";"";""
-"31.03.2025";"Belastungen Dauerauftrag (3)";"";"";"Z250901543292";"";"3125.00";"";"31.03.2025";"2477.84";"";""
-"";"PLAZZA AG, Sieberstrasse 5, CH-8055 Zürich";"CHF";"200.00";"";"";"";"";"";"";"";""
-"";"PLAZZA AG, Sieberstrasse 5, CH-8055 Zürich";"CHF";"135.00";"";"";"";"";"";"";"";""
-"31.03.2025";"Belastung Dauerauftrag: Ranil Oliver Wijeyratne, Im Tiergarten 11";"";"";"Z250901543287";"";"750.00";"";"31.03.2025";"5602.84";"Jahres Sparen";"Ranil Oliver Wijeyratne, Im Tiergarten 11, 8055 Zuerich, CH"
-"31.03.2025";"Belastung eBill: CSS Kranken-Versicherung AG, Tribschenstrasse 21";"";"";"Z250901197025";"";"6.15";"";"31.03.2025";"6352.84";"";"CSS Kranken-Versicherung AG, Tribschenstrasse 21, CH-6002 Luzern"
+26.03.2025;Money coming in;"";"";"L11H711194DREBZS-1";"";"";"91.84";"31.03.2025";1234.25;"";""
+"31.03.2025";Unsettled payment;"";"";"";"";"8.50";"";"";"";"";""
+"31.03.2025";Grouped payments;"";"";"Z250901543292";"";"3125.00";"";"31.03.2025";1234.25;"";""
+"";Entry 1;"CHF";"200.00";"";"";"";"";"";"";"";""
+"";Entry 2;"CHF";"135.00";"";"";"";"";"";"";"";""
+"26.03.2025";Money coming in with details;"";"";"Z250859152984";"";"";"37.50";"26.03.2025";1234.25;Zahlungszweck;Details
+"31.03.2025";Payment with purpose and details;"";"";"Z250901543287";"";"750.00";"";"31.03.2025";1234.25;Zahlungszweck;Details
+"31.03.2025";Payment with details;"";"";"Z250901197025";"";"6.15";"";"31.03.2025";1234.25;"";Details
