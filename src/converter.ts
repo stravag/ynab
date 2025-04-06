@@ -30,7 +30,7 @@ function convertZkb(content: string): YnabRecord[] {
         .filter(r => r["ZKB-Referenz"] !== null)
         .map(r => ({
             Date: r.Valuta!,
-            Payee: r.Details ?? r.Buchungstext!,
+            Payee: (r.Details ?? r.Buchungstext!).replace(/^Einkauf ZKB Visa Debit Card Nr. xxxx 5793, /, ''),
             Memo: r.Zahlungszweck,
             Outflow: r["Belastung CHF"],
             Inflow: r["Gutschrift CHF"]
