@@ -2,18 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>YNAB CSV Converter</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f2f4f8;
+        }
+
+        .container {
+            background: white;
+            padding: 2em;
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #file-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 2rem 1rem;
+            border: 2px dashed #cccccc;
+            border-radius: 0.75rem;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        #file-input:hover {
+            background-color: #f2f4f8;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<main class="container-fluid">
-    <h1>YNAB CSV Converter</h1>
-    <article id="drop-zone">
-        <p>Drop CSV file here</p>
-    </article>
-</main>
+<div class="container">
+    <h1>Upload CSV File</h1>
+    <label for="file" id="file-input">
+        Click to choose a CSV file
+    </label>
+    <input type="file" id="file" accept=".csv"/>
+</div>
 <script type="module" src="./src/main.ts"></script>
 </body>
 </html>
