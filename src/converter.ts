@@ -51,8 +51,8 @@ function convertViseca(content: string): YnabRecord[] {
                 Date: ynabDateFormat.format(Date.parse(r.Date)),
                 Payee: r.MerchantName ?? r.Details,
                 Memo: r.Details,
-                Outflow: r.Amount > 0 ? r.Amount : null,
-                Inflow: r.Amount < 0 ? r.Amount : null
+                Outflow: r.Amount,
+                Inflow: null
             }
         })
 }
