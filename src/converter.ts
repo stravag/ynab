@@ -26,11 +26,25 @@ function convertZkb(content: string): YnabRecord[] {
         skipEmptyLines: true,
     })
 
+    const replacementPatterns = [
+        { pattern: /^Einkauf ZKB Visa Debit Card Nr. xxxx \d{4}, /g, replacement: 'Einkauf, ' },
+        { pattern: /^Online-Einkauf ZKB Visa Debit Card Nr. xxxx \d{4}, /g, replacement: 'Online-Einkauf, ' },
+    ];
+
+    // Function to apply all replacements
+    const cleanText = (text: string): string => {
+        let result = text;
+        replacementPatterns.forEach(({ pattern, replacement }) => {
+            result = result.replace(pattern, replacement);
+        });
+        return result;
+    };
+
     return csv.data
         .filter(r => r["ZKB-Referenz"] !== null)
         .map(r => ({
             Date: r.Valuta!,
-            Payee: (r.Details ?? r.Buchungstext!).replace(/^Einkauf ZKB Visa Debit Card Nr. xxxx 5793, /, ''),
+            Payee: cleanText(r.Details ?? r.Buchungstext!),
             Memo: r.Zahlungszweck,
             Outflow: r["Belastung CHF"],
             Inflow: r["Gutschrift CHF"]
