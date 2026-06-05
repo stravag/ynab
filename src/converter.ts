@@ -27,8 +27,8 @@ function convertZkb(content: string): YnabRecord[] {
     })
 
     const replacementPatterns = [
-        { pattern: /^Einkauf ZKB Visa Debit Card Nr. xxxx \d{4}, /g, replacement: 'Einkauf, ' },
-        { pattern: /^Online-Einkauf ZKB Visa Debit Card Nr. xxxx \d{4}, /g, replacement: 'Online-Einkauf, ' },
+        { pattern: /^Einkauf ZKB Visa Debit Card Nr. xxxx \d{4}, /g, replacement: '' },
+        { pattern: /^Online-Einkauf ZKB Visa Debit Card Nr. xxxx \d{4}, /g, replacement: '' },
     ];
 
     // Function to apply all replacements
