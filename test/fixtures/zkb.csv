@@ -1,9 +1,10 @@
-﻿"Datum";"Buchungstext";"Whg";"Betrag Detail";"ZKB-Referenz";"Referenznummer";"Belastung CHF";"Gutschrift CHF";"Valuta";"Saldo CHF";"Zahlungszweck";"Details"
+"Datum";"Buchungstext";"Whg";"Betrag Detail";"ZKB-Referenz";"Referenznummer";"Belastung CHF";"Gutschrift CHF";"Valuta";"Saldo CHF";"Zahlungszweck";"Details"
 26.03.2025;Money coming in;"";"";"L11H711194DREBZS-1";"";"";"91.84";"31.03.2025";1234.25;"";""
 "31.03.2025";Unsettled payment;"";"";"";"";"8.50";"";"";"";"";""
 "31.03.2025";Grouped payments;"";"";"Z250901543292";"";"3125.00";"";"31.03.2025";1234.25;"";""
 "";Entry 1;"CHF";"200.00";"";"";"";"";"";"";"";""
 "";Entry 2;"CHF";"135.00";"";"";"";"";"";"";"";""
+"";Entry 3;"CHF";"2790.00";"";"";"";"";"";"";"";""
 "26.03.2025";Money coming in with details;"";"";"Z250859152984";"";"";"37.50";"26.03.2025";1234.25;Zahlungszweck;Details
 "31.03.2025";Payment with purpose and details;"";"";"Z250901543287";"";"750.00";"";"31.03.2025";1234.25;Zahlungszweck;Details
 "31.03.2025";Payment with details;"";"";"Z250901197025";"";"6.15";"";"31.03.2025";1234.25;"";Details

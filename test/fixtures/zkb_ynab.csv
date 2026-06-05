@@ -1,6 +1,8 @@
-﻿Date,Payee,Memo,Outflow,Inflow
+Date,Payee,Memo,Outflow,Inflow
 31.03.2025,Money coming in,,,91.84
-31.03.2025,Grouped payments,,3125,
+31.03.2025,Entry 1,,200,
+31.03.2025,Entry 2,,135,
+31.03.2025,Entry 3,,2790,
 26.03.2025,Details,Zahlungszweck,,37.5
 31.03.2025,Details,Zahlungszweck,750,
 31.03.2025,Details,,6.15,

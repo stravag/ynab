@@ -40,15 +40,55 @@ function convertZkb(content: string): YnabRecord[] {
         return result;
     };
 
-    return csv.data
-        .filter(r => r["ZKB-Referenz"] !== null)
-        .map(r => ({
-            Date: r.Valuta!,
-            Payee: cleanText(r.Details ?? r.Buchungstext!),
-            Memo: r.Zahlungszweck,
-            Outflow: r["Belastung CHF"],
-            Inflow: r["Gutschrift CHF"]
-        }))
+    const records: YnabRecord[] = [];
+
+    for (let i = 0; i < csv.data.length; i++) {
+        const r = csv.data[i];
+        if (r["ZKB-Referenz"] === null) {
+            if (r.Datum === null || r["Betrag Detail"] !== null) {
+                throw Error("Unexpected detail row without parent booking");
+            }
+            continue;
+        }
+
+        const details: ZkbRecord[] = [];
+        while (
+            i + 1 < csv.data.length &&
+            csv.data[i + 1]["ZKB-Referenz"] === null &&
+            (csv.data[i + 1].Datum === null || csv.data[i + 1]["Betrag Detail"] !== null)
+        ) {
+            i++;
+            details.push(csv.data[i]);
+        }
+
+        if (details.length > 0) {
+            const parentAmount = r["Belastung CHF"] ?? r["Gutschrift CHF"] ?? 0;
+            const detailsSum = details.reduce((sum, d) => sum + (d["Betrag Detail"] ?? 0), 0);
+            if (Math.round(detailsSum * 100) !== Math.round(parentAmount * 100)) {
+                throw Error(`Bundled booking amount mismatch: expected ${parentAmount}, but details sum to ${detailsSum}`);
+            }
+
+            for (const d of details) {
+                records.push({
+                    Date: r.Valuta!,
+                    Payee: cleanText(d.Details ?? d.Buchungstext!),
+                    Memo: d.Zahlungszweck ?? r.Zahlungszweck,
+                    Outflow: r["Belastung CHF"] !== null ? d["Betrag Detail"] : null,
+                    Inflow: r["Gutschrift CHF"] !== null ? d["Betrag Detail"] : null,
+                });
+            }
+        } else {
+            records.push({
+                Date: r.Valuta!,
+                Payee: cleanText(r.Details ?? r.Buchungstext!),
+                Memo: r.Zahlungszweck,
+                Outflow: r["Belastung CHF"],
+                Inflow: r["Gutschrift CHF"]
+            });
+        }
+    }
+
+    return records;
 }
 
 function convertViseca(content: string): YnabRecord[] {
@@ -84,7 +124,7 @@ type ZkbRecord = {
     "Datum": string | null,
     "Buchungstext": string,
     "Whg": string | null,
-    "Betrag Detail": number,
+    "Betrag Detail": number | null,
     "ZKB-Referenz": string | null,
     "Referenznummer": string | null,
     "Belastung CHF": number | null,
